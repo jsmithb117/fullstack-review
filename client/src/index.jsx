@@ -13,6 +13,21 @@ class App extends React.Component {
 
   }
 
+  componentDidMount () {
+    const url = 'http://localhost:1128/repos';
+    fetch(url)
+    .then((data) => {
+      console.log('got top 25 from server');
+      console.log(data);
+      return data.json();
+    })
+    .then ((jsonData) => {
+      console.log('jsonData');
+      console.log(jsonData);
+      this.setState({repos: jsonData})
+    })
+  }
+
   search (term) {
     // console.log(`${term} was searched`);
     const searchTerm = JSON.stringify(term);
