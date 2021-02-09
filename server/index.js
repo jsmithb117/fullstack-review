@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const https = require('https');
-const { getReposByUsername } = require('../helpers/github.js');
+const { getReposByUsername, getTopRepos } = require('../helpers/github.js');
 let app = express();
 
 app.use(bodyParser.json());
@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.post('/repos', function (req, res) {
-  console.log('POST /repos, req.body: ', req.body);
+  console.log('POST /repos');
 
   getReposByUsername(req.body.username);
 
@@ -24,7 +24,12 @@ app.post('/repos', function (req, res) {
 
 app.get('/repos', function (req, res) {
   console.log('GET /repos');
-  res.send();
+  //do getTopRepos
+  getTopRepos((data) => {
+    console.log('gotRepos data length');
+    console.log(data.length);
+    res.send(data);
+  })
   // TODO - your code here!
   // This route should send back the top 25 repos
 });

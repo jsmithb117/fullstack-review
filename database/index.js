@@ -25,6 +25,10 @@ let repoSchema = mongoose.Schema({
 let Repo = mongoose.model('Repo', repoSchema); //creates a model
 
 let save = (err, dataArray) => {
+  if (err) {
+    console.error('error in "save"');
+    console.error(err);
+  }
   Repo.insertMany(dataArray, (err, response) => {
     if(err) {
       console.error(err);
@@ -33,8 +37,15 @@ let save = (err, dataArray) => {
   })
 }
 
-let query = (err, queryString) => {
-  console.log('queryString: ', queryString);
+let query = (err, queryString, cb) => {
+  console.log('query');
+  //do find on database for queryString
+  Repo.find({}, null, null, (err, response) => {
+    console.log('find responded');
+    // console.log(response);
+    cb(response);
+  })
+  //.then return response
 }
 module.exports.save = save;
 module.exports.query = query;

@@ -14,8 +14,7 @@ class App extends React.Component {
   }
 
   search (term) {
-    console.log(`${term} was searched`);
-    // POST /repos
+    // console.log(`${term} was searched`);
     const searchTerm = JSON.stringify(term);
     const url = 'http://localhost:1128/repos';
     const options = {
