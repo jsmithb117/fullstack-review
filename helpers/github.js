@@ -1,8 +1,9 @@
 const axios = require('axios');
 const config = require('../config.js');
-const saveToDb = require('../databas/index.js');
+const db = require('../database/index.js');
 
 let getReposByUsername = (username) => {
+  console.log('getReposByUsername: ', username);
 
   // The options object has been provided to help you out,
   // but you'll have to fill in the URL
@@ -40,10 +41,10 @@ let getReposByUsername = (username) => {
     return dataArray
   })
   .then((dataArray) => {
-    saveToDb(dataArray);
-    // console.log('dataArray');
-    // console.log(dataArray);
+    console.log('saving to db')
+    db.save(null, dataArray);
   })
-}
+};
+
 
 module.exports.getReposByUsername = getReposByUsername;

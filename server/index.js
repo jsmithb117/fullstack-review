@@ -4,23 +4,12 @@ const https = require('https');
 const { getReposByUsername } = require('../helpers/github.js');
 let app = express();
 
-app.use((req, res, next) => {
-  console.log('new request');
-  next();
-});
-
 app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-  console.log('new request');
-  next();
-});
 
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.post('/repos', function (req, res) {
-  console.log('POST /repos, req.body:');
-  console.log(req.body);
+  console.log('POST /repos, req.body: ', req.body);
 
   getReposByUsername(req.body.username);
 
