@@ -10,43 +10,37 @@ class App extends React.Component {
     this.state = {
       repos: []
     }
-
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const url = 'http://localhost:1128/repos';
     fetch(url)
-    .then((data) => {
-      console.log('got top 25 from server');
-      console.log(data);
-      return data.json();
-    })
-    .then ((jsonData) => {
-      console.log('jsonData');
-      console.log(jsonData);
-      this.setState({repos: jsonData})
-    })
+      .then((data) => {
+        return data.json();
+      })
+      .then((jsonData) => {
+        this.setState({ repos: jsonData })
+      })
   }
 
-  search (term) {
-    // console.log(`${term} was searched`);
-    const searchTerm = JSON.stringify(term);
+  search(term) {
     const url = 'http://localhost:1128/repos';
     const options = {
       method: 'POST',
-      body: searchTerm
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: term })
     }
     fetch(url, options)
-    .then((data) => {
-      console.log('data: ', data);
-    })
+      .catch((err) => {
+        if (err) { console.error(err) }
+      })
   };
 
-  render () {
+  render() {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
-      <Search onSearch={this.search.bind(this)}/>
+      <RepoList repos={this.state.repos} />
+      <Search onSearch={this.search.bind(this)} />
     </div>)
   }
 }
