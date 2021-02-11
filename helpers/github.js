@@ -15,34 +15,24 @@ let getReposByUsername = (username) => {
 
   axios.get(url, options)
     .then((APIresponse) => {
-      var APIdataArray = [];
+      var dataArray = [];
       var APIdata = APIresponse.data;
       for (let i = 0; i < APIdata.length; i++) {
         var eachData = {
           repoId: APIdata[i].id,
           name: APIdata[i].name,
-          owner: {
-            login: APIdata[i].owner.login,
-            id: APIdata[i].owner.id,
-            url: APIdata[i].owner.url,
-            html_url: APIdata[i].html_url
-          },
           html_url: APIdata[i].html_url,
-          url: APIdata[i].url,
           description: APIdata[i].description,
           forks_count: APIdata[i].forks_count,
-          watchers: APIdata[i].watchers
+          watchers: APIdata[i].watchers,
+          owner: APIdata[i].owner.login
         }
-        APIdataArray.push(eachData);
+        dataArray.push(eachData);
       }
-      return APIdataArray
-    })
-    .then((dataArray) => {
       db.save(dataArray);
     })
     .catch((err) => {
-      console.log('in github.js')
-      console.error(err);
+      console.error('error getting API response: ', err);
     })
 };
 
@@ -50,10 +40,11 @@ let getTopRepos = (cb) => {
   var watchers = [];
   var topRepos = [];
   var length;
-  db.query(null, null, (response) => {
+
+  db.queryAll((response) => {
     var parsedData = []
     for (let elem of response) {
-      if (elem?.owner?.id)
+      if (elem._doc)
         parsedData.push(elem._doc);
     }
     parsedData.sort((a, b) => ((a.watchers + (a.forks_count * 4)) > (b.watchers + (b.forks_count * 4))) ? 1 : -1);

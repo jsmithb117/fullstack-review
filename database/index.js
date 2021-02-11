@@ -15,38 +15,42 @@ let repoSchema = mongoose.Schema({
   },
   name: String,
   html_url: String,
-  url: String,
   description: String,
   forks_count: Number,
   watchers: Number,
-  owner: {
-    login: String,
-    id: Number,
-    avatar_url: String,
-    url: String,
-    html_url: String
-}});
+  owner: String
+});
 
 let Repo = mongoose.model('Repo', repoSchema);
 
 let save = (dataArray) => {
-  console.log('saving');
-  Repo.insertMany(dataArray)
-  .catch((err) => {
-    if (err) {
-      console.log('in save');
-      console.error(err);
-    }
-  })
-  return;
-}
+  if (dataArray.length === 0) {
+    return;
+  }
+  const filter = { repoId: dataArray[0].id };
+  const update = dataArray[0];
 
-let query = (err, queryString, cb) => {
+  Repo.findOneAndUpdate(filter, update, {
+    new: true,
+    upsert: true
+  })
+    .then(() => {
+      save(dataArray.slice(1));
+    })
+    .catch((err) => {
+      if (err.code !== 11000) console.error(err);
+    });
+};
+
+let queryAll = (cb) => {
   console.log('querying');
   Repo.find({}, null, null, (err, response) => {
+    if (err) {
+      console.error('Error doing Repo.find(): ', err);
+    }
     cb(response);
   })
 }
 
 module.exports.save = save;
-module.exports.query = query;
+module.exports.queryAll = queryAll;
