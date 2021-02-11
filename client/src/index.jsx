@@ -21,6 +21,10 @@ class App extends React.Component {
       .then((jsonData) => {
         this.setState({ repos: jsonData })
       })
+      .catch((err) => {
+        console.log('componentDidMount error');
+        console.error(err);
+      })
   }
 
   search(term) {

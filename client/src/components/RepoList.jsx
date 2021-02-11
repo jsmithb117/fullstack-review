@@ -1,14 +1,16 @@
 import React from 'react';
 import Repo from './Repo.jsx';
 
-const RepoList = ({ repos }) => (
-  <div>
-    <h4> Repo List Component </h4>
+const RepoList = ({ repos }) => {
+  return (
+    <div>
+      <h4> Repo List Component </h4>
       There are {repos.length} repos.
-    <span>
-      {repos.map((repo) => <Repo repo={repo} key={repo.id} />)}
-    </span>
-  </div>
-)
+      <span>
+        {repos.map((repo) => <Repo repo={repo} key={repo.repoId} />)}
+      </span>
+    </div>
+  )
+}
 
 export default RepoList;

@@ -5,8 +5,8 @@ const db = require('../database/index.js');
 let getReposByUsername = (username) => {
   const url = `https://api.github.com/users/${username}/repos`;
   let options = {
-    per_page: 1,
-    pages: 1,
+    // per_page: 1,
+    // pages: 1,
     headers: {
       'User-Agent': 'request',
       'Authorization': `token ${config.TOKEN}`
@@ -19,7 +19,7 @@ let getReposByUsername = (username) => {
       var APIdata = APIresponse.data;
       for (let i = 0; i < APIdata.length; i++) {
         var eachData = {
-          id: APIdata[i].id,
+          repoId: APIdata[i].id,
           name: APIdata[i].name,
           owner: {
             login: APIdata[i].owner.login,
@@ -38,7 +38,11 @@ let getReposByUsername = (username) => {
       return APIdataArray
     })
     .then((dataArray) => {
-      db.save(null, dataArray);
+      db.save(dataArray);
+    })
+    .catch((err) => {
+      console.log('in github.js')
+      console.error(err);
     })
 };
 

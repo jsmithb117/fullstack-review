@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/fetcher');
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/fetcher', { useMongoClient: true });
 
-mongoose.connection.on('error', err => console.error(err));
+mongoose.connection.on('error', err => {
+  console.log('in index.js');
+  console.error(err);
+});
 
 let repoSchema = mongoose.Schema({
-  id: {
+  repoId: {
     type: Number,
+    index: true,
     unique: true
   },
   name: String,
@@ -24,18 +29,20 @@ let repoSchema = mongoose.Schema({
 
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (err, dataArray) => {
-  if (err) {
-    console.error(err);
-  }
-  Repo.insertMany(dataArray, (err, response) => {
-    if(err) {
+let save = (dataArray) => {
+  console.log('saving');
+  Repo.insertMany(dataArray)
+  .catch((err) => {
+    if (err) {
+      console.log('in save');
       console.error(err);
     }
   })
+  return;
 }
 
 let query = (err, queryString, cb) => {
+  console.log('querying');
   Repo.find({}, null, null, (err, response) => {
     cb(response);
   })
