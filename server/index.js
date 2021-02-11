@@ -4,9 +4,10 @@ const https = require('https');
 const { getReposByUsername, getTopRepos } = require('../helpers/github.js');
 let app = express();
 let port = process.env.PORT;
-if ((port == null) || (port = '')) {
+if (port == null || port == '') {
   port = 1128;
 }
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 

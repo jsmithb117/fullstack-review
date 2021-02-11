@@ -7,7 +7,7 @@ const RepoList = ({ repos }) => {
       <h4> Repo List Component </h4>
       There are {repos.length} repos.
       <span>
-        {repos.map((repo) => <Repo repo={repo} key={repo.repoId} />)}
+        {repos.map((repo) => <Repo repo={repo} key={repo._id} />)}
       </span>
     </div>
   )
