@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
 import Search from './components/Search.jsx';
 import RepoList from './components/RepoList.jsx';
 
@@ -8,33 +7,46 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      repos: []
+      repos: [],
+      url: ''
     }
   }
 
   componentDidMount() {
-    const url = 'http://localhost:1128/repos';
-    fetch(url)
-      .then((data) => {
-        return data.json();
-      })
-      .then((jsonData) => {
-        this.setState({ repos: jsonData })
-      })
-      .catch((err) => {
-        console.log('componentDidMount error');
-        console.error(err);
-      })
+    let reactUrl = process.env.REACTURL;
+    if (reactUrl === null || reactUrl === undefined || reactUrl === '') {
+      this.setState({ url: 'http://localhost:1128/repos' }, () => {
+        console.log('url from first: ', this.state.url);
+        fetchData();
+      });
+    } else {
+      this.setState({ url: reactUrl }, () => {
+        console.log('url from second: ', this.state.url);
+        fetchData();
+      });
+    }
+    let fetchData = () => {
+      fetch(this.state.url)
+        .then((data) => {
+          return data.json();
+        })
+        .then((jsonData) => {
+          this.setState({ repos: jsonData })
+        })
+        .catch((err) => {
+          console.log('componentDidMount error');
+          console.error(err);
+        })
+    }
   }
 
   search(term) {
-    const url = 'http://localhost:1128/repos';
     const options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: term })
     }
-    fetch(url, options)
+    fetch(this.state.url, options)
       .catch((err) => {
         if (err) { console.error(err) }
       })

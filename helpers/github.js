@@ -15,7 +15,9 @@ let getReposByUsername = (username) => {
     .then((APIresponse) => {
       var dataArray = [];
       var APIdata = APIresponse.data;
+
       for (let i = 0; i < APIdata.length; i++) {
+        var top = (APIdata[i].forks_count * 4) + APIdata[i].watchers;
         var eachData = {
           _id: APIdata[i].id,
           name: APIdata[i].name,
@@ -23,10 +25,15 @@ let getReposByUsername = (username) => {
           description: APIdata[i].description,
           forks_count: APIdata[i].forks_count,
           watchers: APIdata[i].watchers,
+          top: top,
           owner: APIdata[i].owner.login
         }
         dataArray.push(eachData);
       }
+
+      return dataArray;
+    })
+    .then((dataArray) => {
       db.save(dataArray);
     })
     .catch((err) => {
@@ -39,20 +46,7 @@ let getTopRepos = (cb) => {
   var topRepos = [];
   var length;
 
-  db.queryAll((response) => {
-    var parsedData = []
-    for (let elem of response) {
-      if (elem._doc)
-        parsedData.push(elem._doc);
-    }
-    parsedData.sort((a, b) => ((a.watchers + (a.forks_count * 4)) > (b.watchers + (b.forks_count * 4))) ? 1 : -1);
-    length = parsedData.length <= 25 ? parsedData.length : 25;
-    var iterations = parsedData.length - length;
-    for (let i = 0; i < iterations; i++) {
-      parsedData.shift();
-    }
-    cb(parsedData);
-  })
+  db.queryAll((response) => { cb(response) });
 };
 
 module.exports.getReposByUsername = getReposByUsername;

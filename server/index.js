@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const https = require('https');
 const { getReposByUsername, getTopRepos } = require('../helpers/github.js');
+
 let app = express();
+
 let port = process.env.PORT;
 if (port == null || port == '') {
   port = 1128;
@@ -28,8 +30,6 @@ app.get('/repos', function (req, res) {
     res.send(data);
   })
 });
-
-// let port = 1128;
 
 app.listen(port, function() {
   console.log(`listening on port ${port}`);
