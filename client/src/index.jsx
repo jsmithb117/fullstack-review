@@ -16,12 +16,10 @@ class App extends React.Component {
     let reactUrl = process.env.REACTURL;
     if (reactUrl === null || reactUrl === undefined || reactUrl === '') {
       this.setState({ url: 'http://localhost:1128/repos' }, () => {
-        console.log('url from first: ', this.state.url);
         fetchData();
       });
     } else {
       this.setState({ url: reactUrl }, () => {
-        console.log('url from second: ', this.state.url);
         fetchData();
       });
     }
